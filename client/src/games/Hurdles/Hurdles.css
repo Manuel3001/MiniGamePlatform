@@ -1,0 +1,362 @@
+.hurdles-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    width: 100%;
+}
+
+/* Fortschrittsbalken */
+.progress-bar-container {
+    width: 80%;
+    height: 10px;
+    background: #333;
+    margin: 20px 0;
+    border-radius: 5px;
+    position: relative;
+    border: 1px solid #555;
+}
+
+.progress-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px white;
+    transition: left 0.1s linear;
+    z-index: 2;
+}
+
+.progress-finish {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: white;
+}
+
+/* Fenster auf die Strecke */
+.track-window {
+    width: 800px;
+    height: 400px;
+    border: 4px solid white;
+    background-color: #87CEEB;
+    /* Fallback Himmelblau */
+    overflow: hidden;
+    position: relative;
+    border-radius: 10px;
+    /* Damit absolute Kinder sich hieran orientieren */
+    z-index: 1;
+}
+
+.world-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: transform 0.03s linear;
+}
+
+/* --- HIER WAR DER FEHLER: KORRIGIERT --- */
+.track-sky {
+    position: absolute;
+    top: 0;
+    /* Oben fixiert */
+    left: -1000px;
+    width: 50000px;
+    height: 65%;
+    /* Nimmt obere 65% ein */
+    background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+    z-index: 0;
+}
+
+.track-floor {
+    position: absolute;
+    bottom: 0;
+    /* Unten fixiert */
+    left: -1000px;
+    width: 50000px;
+    height: 35%;
+    /* Nimmt untere 35% ein */
+    background-color: #A0522D;
+    /* Tartanbahn Farbe */
+    border-top: 5px solid #eee;
+    z-index: 1;
+}
+
+/* Bahnlinien */
+.track-lines {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) 50px, transparent 50px, transparent 100px);
+}
+
+/* --- ZIELLINIE --- */
+.finish-line {
+    position: absolute;
+    bottom: 20px;
+    height: 250px;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+}
+
+.finish-post {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    background: #ddd;
+    bottom: 0;
+    border: 2px solid #555;
+}
+
+.finish-post.left {
+    left: -15px;
+}
+
+.finish-post.right {
+    right: 15px;
+}
+
+.finish-banner {
+    position: absolute;
+    top: 20px;
+    background: repeating-linear-gradient(45deg, black, black 20px, white 20px, white 40px);
+    padding: 10px 40px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 4px black;
+    border: 3px solid black;
+    z-index: 10;
+}
+
+/* --- HÜRDEN --- */
+.hurdle {
+    position: absolute;
+    bottom: 20px;
+    width: 60px;
+    height: 70px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.hurdle-top-bar {
+    position: absolute;
+    top: 0;
+    left: -5px;
+    width: 70px;
+    height: 12px;
+    background: repeating-linear-gradient(90deg, #ff3333, #ff3333 15px, #eeeeee 15px, #eeeeee 30px);
+    border: 2px solid #333;
+    border-radius: 2px;
+    z-index: 2;
+    box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.3);
+}
+
+.hurdle-stand {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background: #ccc;
+    border: 1px solid #999;
+    bottom: 0;
+}
+
+.hurdle-stand.left {
+    left: 5px;
+}
+
+.hurdle-stand.right {
+    right: 5px;
+}
+
+.hurdle-stand::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: -10px;
+    width: 26px;
+    height: 6px;
+    background: #bbb;
+    border: 1px solid #888;
+}
+
+/* --- LÄUFER --- */
+.runner-container {
+    position: absolute;
+    width: 40px;
+    height: 80px;
+    transform: translateX(-50%);
+    transition: bottom 0.03s linear, left 0.03s linear;
+    z-index: 10;
+    /* Läufer immer im Vordergrund */
+}
+
+.runner-sprite {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.head {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    background: #ffdbac;
+    border-radius: 50%;
+    border: 2px solid #d4a373;
+    z-index: 5;
+}
+
+.head::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: -2px;
+    width: 15px;
+    height: 5px;
+    background: #333;
+}
+
+.torso {
+    position: absolute;
+    top: 18px;
+    left: 5px;
+    width: 30px;
+    height: 35px;
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    z-index: 4;
+}
+
+/* Gliedmaßen */
+.limb {
+    position: absolute;
+    background: #333;
+    width: 8px;
+    border-radius: 4px;
+    transform-origin: top center;
+}
+
+.arm {
+    height: 28px;
+    top: 20px;
+    z-index: 3;
+}
+
+.arm.left {
+    left: 8px;
+}
+
+.arm.right {
+    left: 24px;
+    z-index: 6;
+}
+
+.leg {
+    height: 35px;
+    top: 50px;
+    z-index: 2;
+}
+
+.leg.left {
+    left: 10px;
+}
+
+.leg.right {
+    left: 22px;
+    z-index: 3;
+}
+
+/* Animationen */
+@keyframes runCycle {
+    0% {
+        transform: rotate(30deg);
+    }
+
+    50% {
+        transform: rotate(-30deg);
+    }
+
+    100% {
+        transform: rotate(30deg);
+    }
+}
+
+@keyframes runCycleOpposite {
+    0% {
+        transform: rotate(-30deg);
+    }
+
+    50% {
+        transform: rotate(30deg);
+    }
+
+    100% {
+        transform: rotate(-30deg);
+    }
+}
+
+.runner-sprite.running .arm.left {
+    animation: runCycle 0.4s infinite linear;
+}
+
+.runner-sprite.running .arm.right {
+    animation: runCycleOpposite 0.4s infinite linear;
+}
+
+.runner-sprite.running .leg.left {
+    animation: runCycleOpposite 0.4s infinite linear;
+}
+
+.runner-sprite.running .leg.right {
+    animation: runCycle 0.4s infinite linear;
+}
+
+.runner-sprite.stumbled .head {
+    transform: rotate(-20deg) translate(-5px, 5px);
+}
+
+.runner-sprite.stumbled .torso {
+    transform: rotate(-10deg);
+}
+
+.runner-sprite.stumbled .arm.left {
+    transform: rotate(-60deg);
+}
+
+.runner-sprite.stumbled .arm.right {
+    transform: rotate(-80deg);
+}
+
+.runner-sprite.stumbled .leg.left {
+    transform: rotate(20deg);
+}
+
+.runner-sprite.stumbled .leg.right {
+    transform: rotate(45deg);
+}
+
+.speedometer {
+    margin-top: 10px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.controls-hint {
+    margin: 10px;
+    font-size: 1.2rem;
+    color: #ffd700;
+    text-shadow: 0 0 5px black;
+}

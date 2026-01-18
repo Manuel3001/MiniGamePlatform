@@ -1,0 +1,134 @@
+.tank-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+.tank-hp-bar {
+    display: flex;
+    gap: 40px;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-shadow: 0 0 5px black;
+}
+
+.tank-field {
+    position: relative;
+    background-color: #1a1a1a; /* Etwas heller als #000 für Kontrast */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    border: 4px solid #555;
+    box-shadow: 0 0 20px black;
+    overflow: hidden;
+}
+
+.wall {
+    position: absolute;
+    background-color: #555;
+    border: 2px solid #777; /* Hellerer Rand für Sichtbarkeit */
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.7);
+    background-image: repeating-linear-gradient(
+        45deg,
+        #555,
+        #555 10px,
+        #444 10px,
+        #444 20px
+    );
+}
+
+.tank {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: left 0.05s linear, top 0.05s linear, transform 0.05s linear;
+    z-index: 10;
+}
+
+/* --- NEUES PANZER DESIGN --- */
+
+/* Die Ketten */
+.tank-tracks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Pseudo-Elemente für die obere und untere Kette */
+.tank-tracks::before,
+.tank-tracks::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 8px; /* Dicke der Kette */
+    background-color: #666; /* Helles Grau für Kontrast zum Boden */
+    border: 1px solid #333;
+    /* Das Reifenprofil-Muster */
+    background-image: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        #222 3px,
+        #222 5px
+    );
+}
+
+.tank-tracks::before { top: 0; }
+.tank-tracks::after { bottom: 0; }
+
+/* Der Körper (bunter Teil) */
+.tank-body {
+    position: relative;
+    width: 32px; /* Schmaler als Gesamtbreite, damit Ketten rausschauen */
+    height: 24px;
+    border: 2px solid rgba(0,0,0,0.5);
+    z-index: 2;
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+}
+
+/* Die Luke oben drauf */
+.tank-hatch {
+    position: absolute;
+    top: 50%; left: 30%;
+    width: 10px; height: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+/* Das Rohr */
+.tank-barrel {
+    position: absolute;
+    right: -8px; /* Ragt weiter raus */
+    width: 28px;
+    height: 6px;
+    background-color: #555; /* Grau statt Schwarz */
+    border: 1px solid #bbb; /* Heller Rand für Kontrast! */
+    border-radius: 2px;
+    z-index: 3;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+}
+
+/* --- KUGELN --- */
+.bullet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #fff; /* Kern Weiß */
+    border: 2px solid #ffd700; /* Rand Gold */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px orange, 0 0 15px red; /* Glüheffekt */
+    z-index: 5;
+}

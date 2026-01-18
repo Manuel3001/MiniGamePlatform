@@ -1,0 +1,183 @@
+.bs-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    width: 100%;
+}
+
+.bs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background-color: #0f3460;
+    padding: 2px;
+    border: 2px solid #4dfff3;
+    margin-top: 10px;
+}
+
+.bs-row {
+    display: flex;
+    gap: 1px;
+}
+
+.bs-cell {
+    width: 30px;
+    height: 30px;
+    background-color: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    cursor: default;
+    user-select: none;
+}
+
+.ship {
+    background-color: #a0a0a0;
+    color: black;
+    font-weight: bold;
+}
+
+.C {
+    background-color: #555;
+}
+
+.B {
+    background-color: #666;
+}
+
+.R {
+    background-color: #777;
+}
+
+.S {
+    background-color: #888;
+}
+
+.D {
+    background-color: #999;
+}
+
+.play-mode {
+    width: 90%;
+}
+
+.boards-wrapper {
+    display: flex;
+    gap: 50px;
+    margin-top: 20px;
+}
+
+.active-target .bs-cell.fog:hover {
+    background-color: #25355e;
+    cursor: crosshair;
+    border: 1px solid #e94560;
+}
+
+/* Status Styles */
+.hit {
+    background-color: #e94560 !important;
+    color: white;
+}
+
+.miss {
+    background-color: #16213e !important;
+    color: #aaa;
+}
+
+/* NEU: Versenktes Schiff auf Ziel-Brett */
+.sunk {
+    background-color: #222 !important;
+    color: #e94560;
+    border: 1px solid #e94560;
+    text-decoration: line-through;
+}
+
+/* NEU: Zerstörtes Schiff auf eigenem Brett */
+.destroyed {
+    background-color: #000 !important;
+    border: 1px solid red;
+    opacity: 0.7;
+}
+
+.revealed-ship {
+    background-color: #ffd700 !important;
+    color: black;
+}
+
+.revealed-water {
+    background-color: #00b09b !important;
+    opacity: 0.5;
+}
+
+.damaged {
+    background-color: #ff4d4d;
+    border: 1px solid red;
+}
+
+.splash {
+    background-color: #4dfff3;
+    opacity: 0.3;
+}
+
+.marker-x {
+    position: absolute;
+    font-size: 1.5rem;
+    color: darkred;
+    font-weight: bold;
+}
+
+.tools-menu {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tools-menu button {
+    padding: 5px 10px;
+    border: 1px solid #4dfff3;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.tools-menu button.active {
+    background: #4dfff3;
+    color: black;
+}
+
+.tools-menu button:disabled {
+    border-color: #555;
+    color: #555;
+    cursor: not-allowed;
+}
+
+.sub-tool {
+    border-color: #e94560 !important;
+    color: #e94560 !important;
+}
+
+.setup-controls button {
+    margin-left: 10px;
+    padding: 10px;
+    background: #4dfff3;
+    border: none;
+    cursor: pointer;
+}
+
+/* Turn Indicator */
+.turn-indicator {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background: #333;
+    border-radius: 5px;
+}
+
+.turn-indicator.my-turn {
+    background: #4dfff3;
+    color: black;
+    font-weight: bold;
+    box-shadow: 0 0 10px #4dfff3;
+}

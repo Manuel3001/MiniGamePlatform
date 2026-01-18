@@ -1,0 +1,130 @@
+.mem-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a2e;
+    color: white;
+    perspective: 1000px;
+    /* Für 3D Effekt */
+}
+
+.mem-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #2b3652;
+    border-radius: 10px;
+}
+
+.player-score {
+    text-align: center;
+    padding: 5px 15px;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.player-score.active {
+    background: rgba(77, 255, 243, 0.1);
+    border-color: #4dfff3;
+    transform: scale(1.1);
+}
+
+.player-score .label {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.player-score .score {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.status-msg {
+    font-weight: bold;
+    color: #ffd700;
+    text-transform: uppercase;
+}
+
+/* GRID */
+.mem-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1;
+    /* Quadratisch halten */
+}
+
+/* CARD 3D FLIP */
+.mem-card {
+    background-color: transparent;
+    perspective: 1000px;
+    cursor: pointer;
+    position: relative;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.mem-card.flipped .card-inner,
+.mem-card.matched .card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Match Farben */
+.mem-card.matched.mine .card-inner .card-back {
+    border: 3px solid #00e676;
+    background: #1b3a2b;
+}
+
+.mem-card.matched.theirs .card-inner .card-back {
+    border: 3px solid #ff1744;
+    background: #3a1b1f;
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 2rem;
+}
+
+.card-front {
+    background-color: #333;
+    color: #555;
+    border: 2px solid #444;
+}
+
+.mem-card:hover .card-front {
+    background-color: #3d3d3d;
+}
+
+.card-back {
+    background-color: #eee;
+    color: black;
+    transform: rotateY(180deg);
+}

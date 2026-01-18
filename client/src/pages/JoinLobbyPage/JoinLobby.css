@@ -1,0 +1,262 @@
+.join-lobby-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1a1a2e;
+    color: white;
+    overflow: hidden; /* WICHTIG: Kein Scrollen auf der Hauptseite */
+}
+
+/* --- ALLGEMEINE SPALTEN --- */
+.col-left {
+    width: 25%;
+    background-color: #12182b;
+    border-right: 1px solid #0f3460;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 100%; /* WICHTIG: Volle Höhe nutzen */
+    box-sizing: border-box; /* Padding wird eingerechnet */
+}
+
+.col-center {
+    width: 40%;
+    background-color: #16213e;
+    border-right: 1px solid #0f3460;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 100%; /* WICHTIG */
+    box-sizing: border-box;
+}
+
+.col-right {
+    width: 35%;
+    background-color: #1a1a2e;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative; 
+    height: 100%; /* WICHTIG */
+    box-sizing: border-box;
+}
+
+/* --- LINKE SPALTE INHALT --- */
+.search-section {
+    margin-bottom: 30px;
+    flex-shrink: 0; /* Darf nicht kleiner werden */
+}
+.search-section label {
+    display: block;
+    color: #4dfff3;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.search-section input {
+    width: 100%;
+    padding: 10px;
+    background: #0f3460;
+    border: 1px solid #4dfff3;
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+}
+
+.sort-section {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Nimmt den restlichen Platz ein */
+    min-height: 0; /* WICHTIG: Damit das Kind-Element scrollen kann! */
+}
+
+.sort-section h3 {
+    color: #e94560;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.mini-games-list {
+    overflow-y: auto; /* Scrollen aktivieren */
+    flex-grow: 1;
+    padding-right: 5px;
+    /* min-height ist hier durch das Eltern-Element .sort-section bereits geregelt */
+}
+
+.mini-game-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.05);
+    transition: 0.2s;
+}
+
+.mini-game-item:hover { background: rgba(255,255,255,0.1); }
+.mini-game-item.active {
+    background: #0f3460;
+    border: 1px solid #e94560;
+}
+
+.mini-circle {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #aaa;
+}
+
+/* --- MITTLERE SPALTE INHALT --- */
+.col-center h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4dfff3;
+    flex-shrink: 0;
+}
+
+.lobby-list {
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-height: 0; /* WICHTIG: Erlaubt dem Container kleiner zu sein als der Inhalt -> Scrollbar erscheint */
+    padding-right: 5px;
+}
+
+.lobby-card {
+    background: #1f2b4d;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+    flex-shrink: 0; /* Verhindert, dass Karten zerquetscht werden */
+}
+
+.lobby-card:hover { transform: scale(1.02); }
+
+.lobby-card.active {
+    border-color: #4dfff3;
+    background: #25355e;
+    box-shadow: 0 0 15px rgba(77, 255, 243, 0.3);
+}
+
+.lobby-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.creator-name { color: white; }
+.lobby-id { color: #a0a0a0; font-family: monospace; }
+
+.match-info {
+    font-size: 0.8rem;
+    color: #e94560;
+    margin-top: 5px;
+    text-align: right;
+}
+
+/* --- RECHTE SPALTE INHALT --- */
+.right-header {
+    margin-top: 0;
+    text-align: center;
+    color: #a0a0a0;
+    font-weight: normal;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.creator-games-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 80px; /* Platz für Button */
+    min-height: 0; /* WICHTIG */
+}
+
+.placeholder-text, .no-games-text {
+    text-align: center;
+    color: #666;
+    margin-top: 50px;
+}
+
+.creator-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.creator-game-card {
+    background: #0f3460;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.creator-game-icon {
+    width: 40px; height: 40px;
+    background: #ccc;
+    border-radius: 50%;
+    margin-bottom: 5px;
+}
+
+/* Button unten rechts */
+.join-room-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    left: 20px; /* Damit er mittig in der Spalte ist (optional) */
+    padding: 15px; /* Etwas angepasst */
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #e94560, #ff6b6b);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transition: 0.2s;
+}
+
+.join-room-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.join-room-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+}
+
+/* Scrollbars schön machen */
+.mini-games-list::-webkit-scrollbar,
+.lobby-list::-webkit-scrollbar,
+.creator-games-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.mini-games-list::-webkit-scrollbar-track,
+.lobby-list::-webkit-scrollbar-track,
+.creator-games-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mini-games-list::-webkit-scrollbar-thumb,
+.lobby-list::-webkit-scrollbar-thumb,
+.creator-games-area::-webkit-scrollbar-thumb {
+    background: #4dfff3;
+    border-radius: 4px;
+}

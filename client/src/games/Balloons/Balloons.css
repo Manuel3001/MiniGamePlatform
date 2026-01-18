@@ -1,0 +1,85 @@
+.balloons-container {
+    display: flex; flex-direction: column; align-items: center; width: 100%; height: 100dvh;
+    background-color: #81d4fa; /* Himmelblau */
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    color: white; overflow: hidden;
+}
+
+.bloon-hud {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 600px; margin: 10px 0; padding: 10px;
+    background: rgba(255,255,255,0.3); border-radius: 20px;
+    border: 3px solid white; pointer-events: none; user-select: none;
+    z-index: 10;
+}
+
+.bloon-score { text-align: center; }
+.bloon-score .val { font-size: 2.5rem; font-weight: bold; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+.bloon-score.me { color: #2979ff; }
+.bloon-score.opp { color: #ff1744; }
+.label { font-size: 0.8rem; opacity: 0.8; color: #01579b; font-weight: bold; }
+
+.bloon-timer {
+    background: white; color: #ff9100;
+    padding: 5px 20px; border-radius: 50px;
+    font-size: 2rem; font-weight: bold;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.bloon-field {
+    position: relative;
+    background: linear-gradient(to bottom, #81d4fa, #b3e5fc);
+    border: 8px solid white; border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+    cursor: crosshair;
+}
+
+/* Hintergrund Deko */
+.bg-cloud {
+    position: absolute; background: rgba(255,255,255,0.6); border-radius: 50%;
+}
+.b-c1 { width: 150px; height: 60px; top: 100px; left: 50px; }
+.b-c2 { width: 200px; height: 80px; top: 300px; right: 80px; }
+
+/* BALLONS */
+.balloon-wrapper {
+    position: absolute;
+    width: 60px; height: 80px;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Klicks werden vom Field behandelt */
+    transition: top 0.05s linear;
+}
+
+.balloon-body {
+    width: 50px; height: 65px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    position: relative; z-index: 2;
+}
+
+/* Glanzpunkt */
+.balloon-body::after {
+    content: ''; position: absolute;
+    top: 10px; right: 10px;
+    width: 10px; height: 20px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    transform: rotate(-30deg);
+}
+
+/* Schnur */
+.balloon-string {
+    position: absolute; bottom: 0; left: 50%;
+    width: 2px; height: 30px;
+    background: rgba(0,0,0,0.3);
+    transform: translateX(-50%);
+    z-index: 1;
+}
+.balloon-string::before {
+    content: ''; position: absolute; top: -2px; left: -3px;
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 6px solid rgba(0,0,0,0.3); /* Der Knoten */
+}

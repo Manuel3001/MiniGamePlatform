@@ -1,0 +1,184 @@
+.create-lobby-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1a1a2e; /* Dunkler Hintergrund */
+    color: white;
+    overflow: hidden; /* Verhindert Scrollen der ganzen Seite */
+}
+
+/* --- LINKE SEITE --- */
+.left-panel {
+    width: 35%; /* Linker Teil nimmt ca. 1/3 ein */
+    background-color: #16213e;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Schiebt Inhalt auseinander (oben vs unten) */
+    border-right: 2px solid #0f3460;
+}
+
+.settings-top {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-label {
+    font-size: 1.2rem;
+    color: #4dfff3;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.room-id-input {
+    background: #0f3460;
+    border: 2px solid #4dfff3;
+    color: white;
+    padding: 15px;
+    font-size: 1.5rem;
+    border-radius: 10px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box; /* Damit Padding die Breite nicht sprengt */
+}
+
+.room-id-input::placeholder {
+    color: #a0a0a0;
+}
+
+/* Custom Checkbox Design */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #0f3460;
+    border: 2px solid #a0a0a0;
+    border-radius: 5px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #4dfff3;
+    border-color: #4dfff3;
+}
+
+.create-lobby-btn {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(45deg, #0f3460, #4dfff3);
+    border: none;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a1a2e;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.2s;
+}
+
+.create-lobby-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(77, 255, 243, 0.4);
+}
+
+/* --- RECHTE SEITE --- */
+.right-panel {
+    width: 65%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.games-headline {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    text-align: right; /* Oben rechts wie gewünscht */
+    color: #e94560;
+}
+
+.games-scroll-area {
+    flex-grow: 1; /* Füllt den Rest der Höhe aus */
+    overflow-y: auto; /* Erlaubt scrollen nur in diesem Bereich */
+    padding-right: 10px; /* Platz für Scrollbar */
+}
+
+/* Das Grid für die Spiele */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 Icons pro Reihe */
+    gap: 20px;
+}
+
+.game-card {
+    background-color: #16213e;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.game-card:hover {
+    background-color: #1f2b4d;
+    transform: translateY(-5px);
+}
+
+.game-card.selected {
+    border-color: #e94560;
+    box-shadow: 0 0 15px rgba(233, 69, 96, 0.4);
+}
+
+.game-icon-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* Runder Kreis */
+    border: 2px solid #a0a0a0;
+    margin-bottom: 10px;
+    background-color: rgba(255,255,255,0.05);
+}
+
+.game-name {
+    font-size: 1rem;
+    color: #a0a0a0;
+    font-weight: bold;
+}
+
+/* Scrollbar styling für Chrome/Edge/Safari */
+.games-scroll-area::-webkit-scrollbar {
+    width: 10px;
+}
+.games-scroll-area::-webkit-scrollbar-track {
+    background: #0f3460; 
+}
+.games-scroll-area::-webkit-scrollbar-thumb {
+    background: #e94560; 
+    border-radius: 5px;
+}

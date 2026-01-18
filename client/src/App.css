@@ -1,0 +1,23 @@
+/* client/src/App.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a2e; /* Dunkler Hintergrund als Standard */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden; /* Scrollbars global verhindern, Pages regeln das selbst */
+  box-sizing: border-box;
+  color: white;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Der Container aus App.jsx */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: block; /* Einfacher Block, damit Pages den Platz füllen */
+}

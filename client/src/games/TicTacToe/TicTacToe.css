@@ -1,0 +1,54 @@
+.ttt-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+/* Das Hauptgitter (Container für die Zeilen) */
+.ttt-grid {
+    display: flex;
+    flex-direction: column; /* Zeilen untereinander */
+    gap: 2px; /* Das sind die HORIZONTALEN Linien */
+    background-color: #4dfff3; /* Farbe der Linien (scheint durch die Lücken) */
+    padding: 2px; /* Rahmen außen herum */
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Eine einzelne Zeile */
+.ttt-row {
+    display: flex; /* Zellen nebeneinander */
+    gap: 2px; /* Das sind die VERTIKALEN Linien */
+}
+
+/* Die einzelne Zelle */
+.ttt-cell {
+    width: 40px;
+    height: 40px;
+    background-color: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: default;
+}
+
+.ttt-cell.clickable:hover {
+    background-color: #25355e;
+    cursor: pointer;
+}
+
+.ttt-cell.X { color: #4dfff3; text-shadow: 0 0 5px #4dfff3; }
+.ttt-cell.O { color: #e94560; text-shadow: 0 0 5px #e94560; }
+
+.game-status {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+.game-status.win { color: #ffd700; border: 1px solid #ffd700; }
+.game-status.draw { color: #aaa; border: 1px solid #aaa; }

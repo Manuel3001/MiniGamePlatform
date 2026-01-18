@@ -1,0 +1,341 @@
+/* ... Container & HUD (wie vorher) ... */
+.cat-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+}
+
+.cat-top-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+    padding: 10px 20px;
+    background: #222;
+    border: 2px solid #444;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    color: white;
+}
+
+.hud-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.5;
+}
+
+.hud-player.active {
+    opacity: 1;
+    text-shadow: 0 0 10px white;
+}
+
+.hearts {
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+}
+
+.hud-msg {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffd700;
+    text-transform: uppercase;
+}
+
+/* ... Viewport & World ... */
+.cat-viewport {
+    position: relative;
+    width: 800px;
+    height: 500px;
+    overflow: hidden;
+    border: 4px solid #444;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(to bottom, #1e3c72, #2a5298, #87CEEB);
+}
+
+.cat-world {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2000px;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+}
+
+.cat-ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 30px;
+    background: #3e2723;
+    border-top: 8px solid #43a047;
+}
+
+.bg-decoration {
+    position: absolute;
+    pointer-events: none;
+}
+
+.cloud {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 100px;
+    height: 40px;
+    filter: blur(5px);
+}
+
+.c1 {
+    top: 50px;
+    left: 200px;
+}
+
+.c2 {
+    top: 80px;
+    left: 1400px;
+    transform: scale(1.5);
+}
+
+.mountain {
+    bottom: 30px;
+    width: 0;
+    height: 0;
+    border-left: 100px solid transparent;
+    border-right: 100px solid transparent;
+    border-bottom: 200px solid rgba(0, 0, 0, 0.2);
+}
+
+.m1 {
+    left: 400px;
+}
+
+.m2 {
+    left: 1600px;
+    transform: scale(1.2);
+}
+
+.cat-svg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* --- EINHEITEN STACKING --- */
+.cat-unit {
+    position: absolute;
+    width: 0;
+    height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* 1. HÜGEL (Basis) */
+.cat-hill {
+    position: absolute;
+    /* WAR 25px -> Jetzt -15px: Zieht den Hügel unter die Null-Linie in den Boden */
+    bottom: -15px;
+    left: -70px;
+    z-index: 1;
+}
+
+/* 2. BURG (Auf dem Hügel) */
+.cat-castle-structure {
+    position: absolute;
+    /* WAR 60px -> Jetzt 20px: Passt zur neuen Hügel-Höhe */
+    bottom: 20px;
+    left: -40px;
+    z-index: 2;
+}
+
+/* 3. KATAPULT (Auf der Burg) */
+.catapult-svg {
+    transform-origin: bottom center;
+    position: absolute;
+    /* WAR 110px -> Jetzt 70px: Passt zur neuen Burg-Höhe */
+    bottom: 70px;
+    left: -30px;
+    z-index: 3;
+}
+
+.catapult-svg.flip {
+    transform: scaleX(-1);
+}
+
+/* Pfeil Marker (über allem) */
+.me-arrow {
+    position: absolute;
+    /* WAR -160px -> Jetzt -120px: Damit der Pfeil nicht zu hoch schwebt */
+    top: -120px;
+    color: #00e676;
+    font-size: 1.5rem;
+    animation: bounce 1s infinite;
+    text-shadow: 0 0 5px black;
+    font-weight: bold;
+    z-index: 10;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Bombe & Boom */
+.cat-bomb {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%, -50%);
+    animation: spin 0.5s infinite linear;
+    z-index: 20;
+}
+
+@keyframes spin {
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.cat-boom {
+    position: absolute;
+    font-size: 4rem;
+    transform: translate(-50%, -50%);
+    animation: boomAnim 0.5s forwards;
+    z-index: 30;
+}
+
+@keyframes boomAnim {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Controls */
+.cat-controls {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: #222;
+    width: 800px;
+    margin-top: 10px;
+    border-radius: 10px;
+    align-items: center;
+    color: white;
+    border-top: 2px solid #444;
+}
+
+.ctrl-grp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.ctrl-grp label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #4dfff3;
+}
+
+input[type=range] {
+    width: 100%;
+    cursor: pointer;
+    accent-color: #4dfff3;
+}
+
+.fire-btn {
+    padding: 10px 40px;
+    background: #ff1744;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.fire-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.cat-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 50px;
+    font-size: 4rem;
+    color: #ffd700;
+    border: 5px solid white;
+    z-index: 100;
+}
+
+/* ... bestehender Code ... */
+
+/* ANIMATION FÜR DEN ARM */
+.catapult-arm {
+    /* Drehpunkt ist die Achse bei cx=50, cy=50 */
+    transform-origin: 50px 50px;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Wenn geschossen wird: */
+.catapult-arm.firing {
+    animation: fireShot 0.4s forwards;
+}
+
+@keyframes fireShot {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    15% {
+        transform: rotate(-10deg);
+    }
+
+    /* Kurz ausholen */
+    40% {
+        transform: rotate(110deg);
+    }
+
+    /* Nach vorne schnellen */
+    60% {
+        transform: rotate(90deg);
+    }
+
+    /* Zurückfedern */
+    100% {
+        transform: rotate(0deg);
+    }
+
+    /* Zurück zur Ausgangsposition */
+}

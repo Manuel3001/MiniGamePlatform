@@ -1,0 +1,218 @@
+.ws-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #222;
+    color: white;
+    font-family: 'Courier New', monospace;
+}
+
+/* TIMERS */
+.ws-timers {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+    background: #111;
+    border-bottom: 2px solid #444;
+}
+
+.timer-box {
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #555;
+    background: #333;
+    min-width: 120px;
+    transition: all 0.2s;
+}
+
+.timer-box.active {
+    border-color: #4dfff3;
+    box-shadow: 0 0 15px rgba(77, 255, 243, 0.2);
+    transform: scale(1.05);
+}
+
+.timer-box.danger {
+    border-color: #ff1744;
+    color: #ff1744;
+    animation: pulseRed 0.5s infinite;
+}
+
+.timer-box .label {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.timer-box .time {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+@keyframes pulseRed {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* BOARD */
+.ws-board {
+    flex: 1;
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+.ws-winner {
+    font-size: 3rem;
+    color: #ffd700;
+    margin-top: 50px;
+    text-shadow: 0 0 10px black;
+    animation: bounce 1s infinite;
+}
+
+.ws-instruction {
+    font-size: 1.5rem;
+    margin-top: 20px;
+}
+
+.ws-instruction.sub {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-top: 10px;
+}
+
+.highlight {
+    color: #4dfff3;
+    font-weight: bold;
+}
+
+.big-letter {
+    display: inline-block;
+    background: #ff5252;
+    color: white;
+    padding: 0 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.ws-error {
+    margin-top: 10px;
+    background: #ff1744;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* CHAIN */
+.ws-chain {
+    margin-top: 30px;
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.chain-word {
+    font-size: 1.2rem;
+    color: #ccc;
+}
+
+.chain-word:last-child {
+    color: #4dfff3;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.arrow {
+    color: #555;
+    margin-left: 10px;
+}
+
+/* INPUT */
+.ws-input-area {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.ws-input-area input {
+    flex: 1;
+    padding: 15px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    border: 2px solid #555;
+    background: #222;
+    color: white;
+    outline: none;
+    text-transform: uppercase;
+}
+
+.ws-input-area input:focus {
+    border-color: #4dfff3;
+}
+
+.ws-input-area input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ws-input-area button {
+    padding: 0 30px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    background: #4dfff3;
+    color: #111;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.ws-input-area button:disabled {
+    background: #555;
+    color: #888;
+    cursor: not-allowed;
+}

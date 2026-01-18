@@ -1,0 +1,90 @@
+.bp-container {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: background-color 0.5s;
+    font-family: 'Verdana', sans-serif;
+    color: white;
+}
+
+/* Status: Sicher (Gegner hat Bombe) */
+.bp-container.safe {
+    background-color: #1a1a2e;
+}
+
+/* Status: PANIK (Du hast die Bombe) */
+.bp-container.panic {
+    background-color: #3a0000;
+    animation: panicPulse 0.8s infinite alternate;
+}
+
+@keyframes panicPulse {
+    from { box-shadow: inset 0 0 50px transparent; background-color: #3a0000; }
+    to { box-shadow: inset 0 0 100px red; background-color: #5a0000; }
+}
+
+.bp-header {
+    font-size: 2rem; font-weight: bold; margin-bottom: 30px; text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.bp-bomb-visual {
+    font-size: 8rem; margin-bottom: 40px;
+    transition: transform 0.3s;
+}
+
+.panic .bp-bomb-visual {
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* Mathe Aufgabe */
+.bp-task {
+    background: rgba(0,0,0,0.5); padding: 30px; border-radius: 20px;
+    display: flex; flex-direction: column; align-items: center;
+    border: 2px solid #ff5252;
+}
+
+.math-prob {
+    font-size: 3rem; font-weight: bold; margin-bottom: 20px; font-family: monospace;
+}
+
+.bp-task form {
+    display: flex; gap: 10px;
+}
+
+.bp-task input {
+    font-size: 2rem; width: 120px; padding: 10px; text-align: center;
+    border: none; border-radius: 10px; outline: none;
+}
+
+.bp-task button {
+    font-size: 1.5rem; padding: 0 20px; font-weight: bold;
+    background: #ff5252; color: white; border: none; border-radius: 10px;
+    cursor: pointer;
+}
+.bp-task button:hover { background: #ff1744; }
+
+.hint { margin-top: 15px; color: #ccc; font-style: italic; }
+
+.bp-waiting {
+    font-size: 1.5rem; color: #4dfff3; animation: float 2s infinite ease-in-out;
+}
+@keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+
+.bp-overlay {
+    font-size: 4rem; font-weight: bold; color: #ffd700; 
+    text-shadow: 0 0 20px black; z-index: 10;
+}
