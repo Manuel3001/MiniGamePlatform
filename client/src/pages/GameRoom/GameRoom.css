@@ -10,7 +10,7 @@
 
 /* --- LINKS (Ranking & Chat) --- */
 .room-left {
-    width: 550px;
+    width: 500px;
     display: flex;
     flex-direction: column;
     border-right: 1px solid #333;
