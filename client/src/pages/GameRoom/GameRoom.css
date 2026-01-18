@@ -10,7 +10,7 @@
 
 /* --- LINKS (Ranking & Chat) --- */
 .room-left {
-    width: 350px;
+    width: 550px;
     display: flex;
     flex-direction: column;
     border-right: 1px solid #333;
@@ -22,6 +22,7 @@
     padding: 20px;
     overflow-y: auto;
     border-bottom: 1px solid #333;
+    flex-shrink: 0;
 }
 
 .player-ranking-section h3 {
@@ -110,10 +111,11 @@
 
 /* CHAT */
 .chat-section {
-    height: 300px;
     display: flex;
+    flex: 1;
     flex-direction: column;
     background: #1f2940;
+    min-height: 0;
 }
 
 .chat-window {
