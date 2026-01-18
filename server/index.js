@@ -35,8 +35,14 @@ const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
+// ÄNDERUNG 2:
 const io = new Server(server, {
-    cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] }
+    cors: {
+        // Das Sternchen "*" bedeutet: "Erlaube Zugriff von JEDER Webseite".
+        // Das ist wichtig, weil dein Frontend auf Vercel laufen wird.
+        origin: "*", 
+        methods: ["GET", "POST"]
+    }
 });
 
 const activeGames = {};
@@ -495,4 +501,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3001, () => console.log('SERVER RUNNING ON PORT 3001'));
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+    console.log(`SERVER RUNNING ON PORT ${PORT}`);
+});
