@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import io from 'socket.io-client';
 
 // Pages Import
 import StartPage from './pages/StartPage/StartPage';
@@ -12,7 +11,7 @@ import GameRoom from './pages/GameRoom/GameRoom';
 // CSS Import (falls du die App.css erstellt hast, sonst weglassen oder leer lassen)
 import './App.css';
 
-const socket = io.connect("http://localhost:3001");
+import { socket } from './socket';
 
 function App() {
   const [userInfo, setUserInfo] = useState({
