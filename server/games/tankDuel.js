@@ -1,131 +1,130 @@
 // server/games/tankDuel.js
 
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
+const GAME_WIDTH = 1000; // Größer
+const GAME_HEIGHT = 700; // Größer
 const TANK_SIZE = 40;
 const BULLET_SIZE = 8;
-const TANK_SPEED = 4;
-const BULLET_SPEED = 8;
+const TANK_SPEED = 4.5; // Etwas schneller für die große Map
+const BULLET_SPEED = 9;
 const MAX_HP = 3;
 
-// --- MAP DEFINITIONEN ---
-// Jede Map braucht zwingend 4 Spawns (0+1 für Spieler, 2+3 für Bots)
+// --- MAP GENERATOR ---
+// Wir erstellen Maps mit Themes
 const MAPS = [
     {
-        name: "Classic",
+        name: "Dusty Desert",
+        theme: "desert",
         walls: [
-            { x: 100, y: 100, w: 50, h: 200 },
-            { x: 650, y: 300, w: 50, h: 200 },
-            { x: 300, y: 200, w: 200, h: 50 },
-            { x: 300, y: 350, w: 200, h: 50 },
-            { x: 375, y: 100, w: 50, h: 50 },
-            { x: 375, y: 450, w: 50, h: 50 }
+            // Außenbegrenzung (optional, da wir Bounds checken, aber gut für Optik)
+            { x: 200, y: 150, w: 50, h: 400 },
+            { x: 750, y: 150, w: 50, h: 400 },
+            { x: 400, y: 300, w: 200, h: 100 }, // Dicker Block Mitte
+            { x: 100, y: 100, w: 80, h: 80 },
+            { x: 820, y: 100, w: 80, h: 80 },
+            { x: 100, y: 520, w: 80, h: 80 },
+            { x: 820, y: 520, w: 80, h: 80 },
+            // Kleine Streuung
+            { x: 300, y: 100, w: 40, h: 40 },
+            { x: 660, y: 560, w: 40, h: 40 },
+            { x: 300, y: 560, w: 40, h: 40 },
+            { x: 660, y: 100, w: 40, h: 40 }
         ],
         spawns: [
-            { x: 50, y: 50, angle: 0 },    // P1
-            { x: 700, y: 500, angle: 180 }, // P2
-            { x: 700, y: 50, angle: 90 },   // Bot 1
-            { x: 50, y: 500, angle: 270 }   // Bot 2
+            { x: 50, y: 350, angle: 0 },
+            { x: 900, y: 350, angle: 180 },
+            { x: 500, y: 50, angle: 90 },
+            { x: 500, y: 600, angle: 270 }
         ]
     },
     {
-        name: "The Cross",
+        name: "Deep Forest",
+        theme: "forest",
         walls: [
-            { x: 350, y: 100, w: 100, h: 400 }, // Dicker Balken Vertikal
-            { x: 100, y: 250, w: 600, h: 100 }, // Dicker Balken Horizontal
-            { x: 150, y: 150, w: 50, h: 50 },   // Deckung LO
-            { x: 600, y: 150, w: 50, h: 50 },   // Deckung RO
-            { x: 150, y: 400, w: 50, h: 50 },   // Deckung LU
-            { x: 600, y: 400, w: 50, h: 50 }    // Deckung RU
+            // Ein Labyrinth aus vielen kleinen Blöcken ("Bäume")
+            { x: 150, y: 100, w: 40, h: 500 }, // Lange Reihe links
+            { x: 810, y: 100, w: 40, h: 500 }, // Lange Reihe rechts
+            
+            { x: 300, y: 100, w: 400, h: 40 }, // Oben quer
+            { x: 300, y: 560, w: 400, h: 40 }, // Unten quer
+            
+            { x: 350, y: 250, w: 60, h: 200 }, // Mitte Links
+            { x: 590, y: 250, w: 60, h: 200 }, // Mitte Rechts
+            
+            // Ecken
+            { x: 50, y: 50, w: 60, h: 60 },
+            { x: 890, y: 50, w: 60, h: 60 },
+            { x: 50, y: 590, w: 60, h: 60 },
+            { x: 890, y: 590, w: 60, h: 60 }
+        ],
+        spawns: [
+            { x: 50, y: 350, angle: 0 },
+            { x: 900, y: 350, angle: 180 },
+            { x: 250, y: 200, angle: 90 },
+            { x: 750, y: 500, angle: 270 }
+        ]
+    },
+    {
+        name: "Neon Cyber",
+        theme: "cyber",
+        walls: [
+            // Symmetrische Arena
+            { x: 250, y: 200, w: 500, h: 20 }, // Strich
+            { x: 250, y: 480, w: 500, h: 20 }, // Strich
+            
+            { x: 490, y: 100, w: 20, h: 150 }, // Vertikal Mitte Oben
+            { x: 490, y: 450, w: 20, h: 150 }, // Vertikal Mitte Unten
+            
+            { x: 150, y: 300, w: 50, h: 100 },
+            { x: 800, y: 300, w: 50, h: 100 },
+            
+            // Viele kleine Hindernisse
+            { x: 350, y: 330, w: 40, h: 40 },
+            { x: 610, y: 330, w: 40, h: 40 }
         ],
         spawns: [
             { x: 50, y: 50, angle: 45 },
-            { x: 700, y: 500, angle: 225 },
-            { x: 700, y: 50, angle: 135 },
-            { x: 50, y: 500, angle: 315 }
-        ]
-    },
-    {
-        name: "The Maze",
-        walls: [
-            // Außenwände (Lückenhaft)
-            { x: 100, y: 0, w: 20, h: 200 },
-            { x: 680, y: 400, w: 20, h: 200 },
-            // Innen-Labyrinth
-            { x: 200, y: 100, w: 400, h: 20 },
-            { x: 200, y: 480, w: 400, h: 20 },
-            { x: 200, y: 100, w: 20, h: 200 },
-            { x: 580, y: 300, w: 20, h: 200 },
-            { x: 380, y: 250, w: 40, h: 100 }  // Mitte
-        ],
-        spawns: [
-            { x: 50, y: 280, angle: 0 },
-            { x: 700, y: 280, angle: 180 },
-            { x: 390, y: 50, angle: 90 },
-            { x: 390, y: 520, angle: 270 }
-        ]
-    },
-    {
-        name: "Urban Chaos", // Viele kleine Blöcke ("Häuser")
-        walls: [
-            { x: 100, y: 100, w: 60, h: 60 },
-            { x: 250, y: 100, w: 60, h: 60 },
-            { x: 400, y: 100, w: 60, h: 60 },
-            { x: 550, y: 100, w: 60, h: 60 },
-            
-            { x: 100, y: 440, w: 60, h: 60 },
-            { x: 250, y: 440, w: 60, h: 60 },
-            { x: 400, y: 440, w: 60, h: 60 },
-            { x: 550, y: 440, w: 60, h: 60 },
-
-            { x: 300, y: 250, w: 200, h: 100 } // Zentrum
-        ],
-        spawns: [
-            { x: 50, y: 280, angle: 0 },
-            { x: 700, y: 280, angle: 180 },
-            { x: 380, y: 30, angle: 90 },
-            { x: 380, y: 550, angle: 270 }
+            { x: 900, y: 600, angle: 225 },
+            { x: 900, y: 50, angle: 135 },
+            { x: 50, y: 600, angle: 315 }
         ]
     }
 ];
 
 const createGameState = (users) => {
-    // 1. Zufällige Map wählen
+    // 1. Map wählen
     const mapIndex = Math.floor(Math.random() * MAPS.length);
     const selectedMap = MAPS[mapIndex];
 
     const tanks = {};
     
-    // 2. Spieler platzieren (P1 auf Spawn 0, P2 auf Spawn 1)
+    // 2. Spieler spawnen
     users.forEach((u, i) => {
         if (i < 2) { 
             const spawn = selectedMap.spawns[i] || { x: 50, y: 50, angle: 0 };
             tanks[u.socketId] = {
-                x: spawn.x,
-                y: spawn.y,
-                angle: spawn.angle,
+                x: spawn.x, y: spawn.y, angle: spawn.angle,
                 hp: MAX_HP,
-                color: i === 0 ? '#4dfff3' : '#e94560', // Cyan & Rot
+                color: i === 0 ? '#4dfff3' : '#ff2e63', // Neon Blau & Neon Rot
+                variant: Math.floor(Math.random() * 3), // 0, 1 oder 2 (Verschiedene Designs)
                 cooldown: 0,
                 inputs: { x: 0, y: 0 },
                 isBot: false,
-                id: u.socketId // ID speichern für einfachere Logik
+                id: u.socketId
             };
         }
     });
 
-    // 3. Bots platzieren (Bot 1 auf Spawn 2, Bot 2 auf Spawn 3)
+    // 3. Bots spawnen (immer 2 Stück)
     for (let i = 1; i <= 2; i++) {
         const botId = `bot_${i}`;
-        const spawnIdx = 1 + i; // Index 2 und 3
-        const spawn = selectedMap.spawns[spawnIdx] || { x: 400, y: 300, angle: 0 }; // Fallback Mitte
+        const spawnIdx = 1 + i;
+        const spawn = selectedMap.spawns[spawnIdx] || { x: 500, y: 350, angle: 0 };
 
         tanks[botId] = {
-            x: spawn.x,
-            y: spawn.y,
-            angle: spawn.angle,
+            x: spawn.x, y: spawn.y, angle: spawn.angle,
             hp: MAX_HP,
-            color: '#76ff03', // Hellgrün für Bots
+            color: '#00e676', // Bot Grün
+            variant: Math.floor(Math.random() * 3),
             cooldown: 0,
             inputs: { x: 0, y: 0 },
             isBot: true,
@@ -140,6 +139,7 @@ const createGameState = (users) => {
         bullets: [],
         walls: selectedMap.walls,
         mapName: selectedMap.name,
+        mapTheme: selectedMap.theme, // WICHTIG für CSS
         winner: null,
         dimensions: { width: GAME_WIDTH, height: GAME_HEIGHT }
     };
@@ -161,8 +161,9 @@ const handleShoot = (gameState, socketId) => {
     if (!tank || tank.hp <= 0 || tank.cooldown > 0) return;
 
     const rad = tank.angle * (Math.PI / 180);
-    const startX = tank.x + TANK_SIZE/2 + (Math.cos(rad) * (TANK_SIZE/2 + 5));
-    const startY = tank.y + TANK_SIZE/2 + (Math.sin(rad) * (TANK_SIZE/2 + 5));
+    // Kugel startet am Ende des Rohrs
+    const startX = tank.x + TANK_SIZE/2 + (Math.cos(rad) * (TANK_SIZE/2 + 8));
+    const startY = tank.y + TANK_SIZE/2 + (Math.sin(rad) * (TANK_SIZE/2 + 8));
 
     gameState.bullets.push({
         x: startX,
@@ -172,28 +173,26 @@ const handleShoot = (gameState, socketId) => {
         owner: socketId
     });
 
-    tank.cooldown = 30; 
+    tank.cooldown = 25; // Etwas schneller schießen
 };
 
-// --- BOT AI ---
+// --- SIMPLER BOT AI ---
 const updateBots = (gameState) => {
     const tanks = gameState.tanks;
     const botIds = Object.keys(tanks).filter(id => tanks[id].isBot);
 
     botIds.forEach(botId => {
         const bot = tanks[botId];
-        if (bot.hp <= 0) return; 
+        if (bot.hp <= 0) return;
 
-        // Ziel finden (Nächster lebender Panzer, egal ob Spieler oder Bot)
+        // Ziel suchen
         let target = null;
         let minDist = Infinity;
         
         Object.keys(tanks).forEach(otherId => {
             if (otherId !== botId && tanks[otherId].hp > 0) {
                 const t = tanks[otherId];
-                const dx = t.x - bot.x;
-                const dy = t.y - bot.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
+                const dist = Math.sqrt(Math.pow(t.x - bot.x, 2) + Math.pow(t.y - bot.y, 2));
                 if (dist < minDist) {
                     minDist = dist;
                     target = t;
@@ -203,55 +202,41 @@ const updateBots = (gameState) => {
 
         bot.moveTimer--;
         if (bot.moveTimer <= 0) {
-            // Neue Entscheidung treffen
-            if (target && Math.random() < 0.7) { // 70% Chance zum Ziel zu fahren
+            // Neue Bewegung
+            if (target && Math.random() < 0.65) { // 65% Verfolgen
                 const dx = target.x - bot.x;
                 const dy = target.y - bot.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                
-                if (dist > 150) { // Fahr ran
-                    bot.inputs = { 
-                        x: Math.round(dx/dist), 
-                        y: Math.round(dy/dist) 
-                    };
-                } else { // Bleib stehen / weich aus
-                    bot.inputs = { x: 0, y: 0 };
+                if (dist > 150) {
+                    bot.inputs = { x: Math.round(dx/dist), y: Math.round(dy/dist) };
+                } else {
+                    bot.inputs = { x: 0, y: 0 }; // Stehenbleiben und schießen
                 }
             } else {
-                // Random Patrol
+                // Random
                 const dirs = [-1, 0, 1];
-                bot.inputs = {
-                    x: dirs[Math.floor(Math.random() * 3)],
-                    y: dirs[Math.floor(Math.random() * 3)]
-                };
+                bot.inputs = { x: dirs[Math.floor(Math.random()*3)], y: dirs[Math.floor(Math.random()*3)] };
             }
-            bot.moveTimer = 30 + Math.random() * 30;
+            bot.moveTimer = 20 + Math.random() * 40;
         }
 
-        // Zielen
+        // Zielen & Schießen
         if (target) {
             const dx = target.x - bot.x;
             const dy = target.y - bot.y;
             bot.angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-            // Schießen wenn ausgerichtet und Cooldown fertig
-            if (bot.cooldown <= 0 && Math.random() < 0.05) {
+            
+            if (bot.cooldown <= 0 && Math.random() < 0.08) {
                 handleShoot(gameState, botId);
             }
         } else if (bot.inputs.x !== 0 || bot.inputs.y !== 0) {
-            // In Fahrtrichtung schauen wenn kein Ziel
             bot.angle = Math.atan2(bot.inputs.y, bot.inputs.x) * (180 / Math.PI);
         }
     });
 };
 
-const checkCollision = (rect1, rect2) => {
-    return (
-        rect1.x < rect2.x + rect2.w &&
-        rect1.x + rect1.w > rect2.x &&
-        rect1.y < rect2.y + rect2.h &&
-        rect1.y + rect1.h > rect2.y
-    );
+const checkCollision = (r1, r2) => {
+    return (r1.x < r2.x + r2.w && r1.x + r1.w > r2.x && r1.y < r2.y + r2.h && r1.y + r1.h > r2.y);
 };
 
 const updatePhysics = (gameState) => {
@@ -259,83 +244,67 @@ const updatePhysics = (gameState) => {
 
     updateBots(gameState);
 
-    // Panzer bewegen
+    // Panzer
     Object.values(gameState.tanks).forEach(tank => {
         if (tank.hp <= 0) return;
-
         if (tank.cooldown > 0) tank.cooldown--;
 
         if (tank.inputs.x !== 0 || tank.inputs.y !== 0) {
-            let moveSpeed = TANK_SPEED;
-            if (tank.inputs.x !== 0 && tank.inputs.y !== 0) {
-                moveSpeed = TANK_SPEED / Math.sqrt(2);
-            }
+            let speed = TANK_SPEED;
+            if (tank.inputs.x !== 0 && tank.inputs.y !== 0) speed /= Math.sqrt(2);
 
-            const newX = tank.x + tank.inputs.x * moveSpeed;
-            const newY = tank.y + tank.inputs.y * moveSpeed;
+            const nx = tank.x + tank.inputs.x * speed;
+            const ny = tank.y + tank.inputs.y * speed;
 
-            const rectX = { x: newX, y: tank.y, w: TANK_SIZE, h: TANK_SIZE };
-            const rectY = { x: tank.x, y: newY, w: TANK_SIZE, h: TANK_SIZE };
+            const rX = { x: nx, y: tank.y, w: TANK_SIZE, h: TANK_SIZE };
+            const rY = { x: tank.x, y: ny, w: TANK_SIZE, h: TANK_SIZE };
             
-            let colX = false;
-            let colY = false;
+            let cX = false, cY = false;
 
-            // Wand Kollision
-            gameState.walls.forEach(wall => {
-                if (checkCollision(rectX, wall)) colX = true;
-                if (checkCollision(rectY, wall)) colY = true;
+            // Wände
+            gameState.walls.forEach(w => {
+                if (checkCollision(rX, w)) cX = true;
+                if (checkCollision(rY, w)) cY = true;
             });
+            // Rand
+            if (nx < 0 || nx + TANK_SIZE > GAME_WIDTH) cX = true;
+            if (ny < 0 || ny + TANK_SIZE > GAME_HEIGHT) cY = true;
 
-            // Map Grenzen
-            if (newX < 0 || newX + TANK_SIZE > GAME_WIDTH) colX = true;
-            if (newY < 0 || newY + TANK_SIZE > GAME_HEIGHT) colY = true;
-
-            if (!colX) tank.x = newX;
-            if (!colY) tank.y = newY;
+            if (!cX) tank.x = nx;
+            if (!cY) tank.y = ny;
             
-            // Bot bleibt stecken? Neue Richtung suchen
-            if (tank.isBot && (colX || colY)) tank.moveTimer = 0;
+            if (tank.isBot && (cX || cY)) tank.moveTimer = 0; // Bot steckt fest -> neu entscheiden
         }
     });
 
-    // Kugeln bewegen
+    // Kugeln
     for (let i = gameState.bullets.length - 1; i >= 0; i--) {
         const b = gameState.bullets[i];
         b.x += b.dx;
         b.y += b.dy;
+        let dead = false;
 
-        let destroyed = false;
-
-        // Grenzen
-        if (b.x < 0 || b.x > GAME_WIDTH || b.y < 0 || b.y > GAME_HEIGHT) destroyed = true;
-        
-        // Wände
-        if (!destroyed) {
-            gameState.walls.forEach(wall => {
-                if (checkCollision({ x: b.x, y: b.y, w: BULLET_SIZE, h: BULLET_SIZE }, wall)) destroyed = true;
+        if (b.x < 0 || b.x > GAME_WIDTH || b.y < 0 || b.y > GAME_HEIGHT) dead = true;
+        if (!dead) {
+            gameState.walls.forEach(w => {
+                if (checkCollision({x:b.x, y:b.y, w:BULLET_SIZE, h:BULLET_SIZE}, w)) dead = true;
             });
         }
 
-        // Treffer
-        if (!destroyed) {
+        if (!dead) {
             Object.keys(gameState.tanks).forEach(id => {
-                const tank = gameState.tanks[id];
-                if (id !== b.owner && tank.hp > 0) {
-                    if (checkCollision({ x: b.x, y: b.y, w: BULLET_SIZE, h: BULLET_SIZE }, { x: tank.x, y: tank.y, w: TANK_SIZE, h: TANK_SIZE })) {
-                        destroyed = true;
-                        tank.hp--;
-                        
-                        // Sieg-Bedingung: Nur noch 1 Team/Spieler übrig?
-                        // Einfachheitshalber: Wer einen killt, bekommt Punkte? 
-                        // Hier: Wenn ein SPIELER stirbt, ist Game Over.
-                        if (tank.hp <= 0 && !tank.isBot) {
-                            // Wenn P1 stirbt, gewinnt der Schütze (auch wenns ein Bot war)
-                            gameState.winner = b.owner.startsWith('bot') ? "BOTS" : b.owner;
+                const t = gameState.tanks[id];
+                if (id !== b.owner && t.hp > 0) {
+                    if (checkCollision({x:b.x, y:b.y, w:BULLET_SIZE, h:BULLET_SIZE}, {x:t.x, y:t.y, w:TANK_SIZE, h:TANK_SIZE})) {
+                        dead = true;
+                        t.hp--;
+                        // Game Over Logik
+                        if (t.hp <= 0 && !t.isBot) {
+                            // Spieler tot -> Killer gewinnt
+                            gameState.winner = b.owner.startsWith('bot') ? 'BOTS' : b.owner;
                         }
-                        // Wenn Bot stirbt, einfach weiter spielen (er ist dann inaktiv)
-                        
-                        // Check ob alle Gegner tot sind (für den Spieler)
-                        const aliveEnemies = Object.values(gameState.tanks).filter(t => t.id !== b.owner && t.hp > 0).length;
+                        // Wenn alle Gegner (Bots und Spieler) tot sind
+                        const aliveEnemies = Object.values(gameState.tanks).filter(e => e.id !== b.owner && e.hp > 0).length;
                         if (aliveEnemies === 0 && !gameState.tanks[b.owner].isBot) {
                             gameState.winner = b.owner;
                         }
@@ -343,10 +312,7 @@ const updatePhysics = (gameState) => {
                 }
             });
         }
-
-        if (destroyed) {
-            gameState.bullets.splice(i, 1);
-        }
+        if (dead) gameState.bullets.splice(i, 1);
     }
 };
 

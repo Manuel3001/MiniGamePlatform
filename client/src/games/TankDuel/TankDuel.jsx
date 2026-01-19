@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './TankDuel.css';
 
 const TankDuel = ({ socket, roomId, gameState, mySocketId }) => {
-  const { tanks, bullets, walls, winner, dimensions } = gameState;
+  const { tanks, bullets, walls, winner, dimensions, mapName, mapTheme } = gameState;
   const myTank = tanks[mySocketId];
   
   const keysPressed = useRef({});
@@ -55,18 +55,22 @@ const TankDuel = ({ socket, roomId, gameState, mySocketId }) => {
 
   return (
     <div className="tank-container">
-        <h2>Tank Duel Arena</h2>
-        {winner && <div className="game-status win">{winner === mySocketId ? "VICTORY!" : "DEFEAT"}</div>}
+        <h2>Tank Duel - Map: {mapName}</h2>
+        {winner && <div className="game-status">{winner === mySocketId ? "VICTORY!" : "GAME OVER"}</div>}
 
         <div className="tank-hp-bar">
             {Object.values(tanks).map((tank, i) => (
                 <div key={i} style={{ color: tank.color }}>
-                   HP: {'♥'.repeat(tank.hp)}
+                   {tank.isBot ? "🤖" : "PLAYER"}: {'♥'.repeat(tank.hp)}
                 </div>
             ))}
         </div>
 
-        <div className="tank-field" style={{ width: dimensions.width, height: dimensions.height }}>
+        {/* CSS Klasse für das Theme hinzufügen */}
+        <div 
+            className={`tank-field theme-${mapTheme || 'classic'}`} 
+            style={{ width: dimensions.width, height: dimensions.height }}
+        >
             
             {/* Wände */}
             {walls.map((w, i) => (
@@ -81,24 +85,18 @@ const TankDuel = ({ socket, roomId, gameState, mySocketId }) => {
             {Object.entries(tanks).map(([id, t]) => (
                 <div 
                     key={id}
-                    className={`tank ${id === mySocketId ? 'my-tank' : 'enemy-tank'}`}
+                    className={`tank ${id === mySocketId ? 'my-tank' : 'enemy-tank'} variant-${t.variant || 0}`}
                     style={{ 
                         left: t.x, 
                         top: t.y, 
-                        transform: `rotate(${t.angle}deg)`,
-                        borderColor: t.color
+                        transform: `rotate(${t.angle}deg)`
                     }}
                 >
-                    {/* NEU: Ketten */}
                     <div className="tank-tracks"></div>
                     
-                    {/* Body */}
-                    <div className="tank-body" style={{ backgroundColor: t.color }}>
-                        {/* Kleines Detail auf dem Dach */}
-                        <div className="tank-hatch"></div>
-                    </div>
+                    {/* Body Farbe per Inline Style, Form per CSS-Klasse */}
+                    <div className="tank-body" style={{ backgroundColor: t.color }}></div>
                     
-                    {/* Rohr */}
                     <div className="tank-barrel"></div>
                 </div>
             ))}
