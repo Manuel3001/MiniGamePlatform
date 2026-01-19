@@ -9,6 +9,7 @@ const BULLET_SPEED = 8;
 const MAX_HP = 3;
 
 // --- MAP DEFINITIONEN ---
+// Jede Map braucht zwingend 4 Spawns (0+1 für Spieler, 2+3 für Bots)
 const MAPS = [
     {
         name: "Classic",
@@ -21,7 +22,7 @@ const MAPS = [
             { x: 375, y: 450, w: 50, h: 50 }
         ],
         spawns: [
-            { x: 50, y: 50, angle: 0 },   // P1
+            { x: 50, y: 50, angle: 0 },    // P1
             { x: 700, y: 500, angle: 180 }, // P2
             { x: 700, y: 50, angle: 90 },   // Bot 1
             { x: 50, y: 500, angle: 270 }   // Bot 2
@@ -30,12 +31,12 @@ const MAPS = [
     {
         name: "The Cross",
         walls: [
-            { x: 350, y: 100, w: 100, h: 400 }, // Vertikal
-            { x: 100, y: 250, w: 600, h: 100 }, // Horizontal
-            { x: 100, y: 100, w: 50, h: 50 },   // Ecke LO
-            { x: 650, y: 100, w: 50, h: 50 },   // Ecke RO
-            { x: 100, y: 450, w: 50, h: 50 },   // Ecke LU
-            { x: 650, y: 450, w: 50, h: 50 }    // Ecke RU
+            { x: 350, y: 100, w: 100, h: 400 }, // Dicker Balken Vertikal
+            { x: 100, y: 250, w: 600, h: 100 }, // Dicker Balken Horizontal
+            { x: 150, y: 150, w: 50, h: 50 },   // Deckung LO
+            { x: 600, y: 150, w: 50, h: 50 },   // Deckung RO
+            { x: 150, y: 400, w: 50, h: 50 },   // Deckung LU
+            { x: 600, y: 400, w: 50, h: 50 }    // Deckung RU
         ],
         spawns: [
             { x: 50, y: 50, angle: 45 },
@@ -45,64 +46,91 @@ const MAPS = [
         ]
     },
     {
-        name: "Pillars",
+        name: "The Maze",
         walls: [
-            { x: 150, y: 150, w: 60, h: 60 },
-            { x: 590, y: 150, w: 60, h: 60 },
-            { x: 150, y: 390, w: 60, h: 60 },
-            { x: 590, y: 390, w: 60, h: 60 },
-            { x: 370, y: 270, w: 60, h: 60 }  // Mitte
+            // Außenwände (Lückenhaft)
+            { x: 100, y: 0, w: 20, h: 200 },
+            { x: 680, y: 400, w: 20, h: 200 },
+            // Innen-Labyrinth
+            { x: 200, y: 100, w: 400, h: 20 },
+            { x: 200, y: 480, w: 400, h: 20 },
+            { x: 200, y: 100, w: 20, h: 200 },
+            { x: 580, y: 300, w: 20, h: 200 },
+            { x: 380, y: 250, w: 40, h: 100 }  // Mitte
         ],
         spawns: [
             { x: 50, y: 280, angle: 0 },
             { x: 700, y: 280, angle: 180 },
-            { x: 380, y: 50, angle: 90 },
-            { x: 380, y: 500, angle: 270 }
+            { x: 390, y: 50, angle: 90 },
+            { x: 390, y: 520, angle: 270 }
+        ]
+    },
+    {
+        name: "Urban Chaos", // Viele kleine Blöcke ("Häuser")
+        walls: [
+            { x: 100, y: 100, w: 60, h: 60 },
+            { x: 250, y: 100, w: 60, h: 60 },
+            { x: 400, y: 100, w: 60, h: 60 },
+            { x: 550, y: 100, w: 60, h: 60 },
+            
+            { x: 100, y: 440, w: 60, h: 60 },
+            { x: 250, y: 440, w: 60, h: 60 },
+            { x: 400, y: 440, w: 60, h: 60 },
+            { x: 550, y: 440, w: 60, h: 60 },
+
+            { x: 300, y: 250, w: 200, h: 100 } // Zentrum
+        ],
+        spawns: [
+            { x: 50, y: 280, angle: 0 },
+            { x: 700, y: 280, angle: 180 },
+            { x: 380, y: 30, angle: 90 },
+            { x: 380, y: 550, angle: 270 }
         ]
     }
 ];
 
 const createGameState = (users) => {
-    // Zufällige Map auswählen
+    // 1. Zufällige Map wählen
     const mapIndex = Math.floor(Math.random() * MAPS.length);
     const selectedMap = MAPS[mapIndex];
 
     const tanks = {};
     
-    // Spieler initialisieren (max 2)
+    // 2. Spieler platzieren (P1 auf Spawn 0, P2 auf Spawn 1)
     users.forEach((u, i) => {
-        if (i < 2) { // Sicherstellen, dass wir max 2 Spieler spawnen
+        if (i < 2) { 
+            const spawn = selectedMap.spawns[i] || { x: 50, y: 50, angle: 0 };
             tanks[u.socketId] = {
-                x: selectedMap.spawns[i].x,
-                y: selectedMap.spawns[i].y,
-                angle: selectedMap.spawns[i].angle,
+                x: spawn.x,
+                y: spawn.y,
+                angle: spawn.angle,
                 hp: MAX_HP,
                 color: i === 0 ? '#4dfff3' : '#e94560', // Cyan & Rot
                 cooldown: 0,
                 inputs: { x: 0, y: 0 },
-                isBot: false
+                isBot: false,
+                id: u.socketId // ID speichern für einfachere Logik
             };
         }
     });
 
-    // 2 Bots hinzufügen
+    // 3. Bots platzieren (Bot 1 auf Spawn 2, Bot 2 auf Spawn 3)
     for (let i = 1; i <= 2; i++) {
         const botId = `bot_${i}`;
-        // Spawn Index verschieben (Spieler sind 0 und 1, Bots 2 und 3)
-        const spawnIdx = 1 + i; 
-        
+        const spawnIdx = 1 + i; // Index 2 und 3
+        const spawn = selectedMap.spawns[spawnIdx] || { x: 400, y: 300, angle: 0 }; // Fallback Mitte
+
         tanks[botId] = {
-            x: selectedMap.spawns[spawnIdx] ? selectedMap.spawns[spawnIdx].x : 50,
-            y: selectedMap.spawns[spawnIdx] ? selectedMap.spawns[spawnIdx].y : 50,
-            angle: selectedMap.spawns[spawnIdx] ? selectedMap.spawns[spawnIdx].angle : 0,
+            x: spawn.x,
+            y: spawn.y,
+            angle: spawn.angle,
             hp: MAX_HP,
-            color: '#99ff99', // Grün für Bots
+            color: '#76ff03', // Hellgrün für Bots
             cooldown: 0,
             inputs: { x: 0, y: 0 },
             isBot: true,
-            // Bot spezifische Daten
-            moveTimer: 0,
-            targetAngle: 0
+            id: botId,
+            moveTimer: 0
         };
     }
 
@@ -130,7 +158,7 @@ const handleInput = (gameState, socketId, inputVector) => {
 
 const handleShoot = (gameState, socketId) => {
     const tank = gameState.tanks[socketId];
-    if (!tank || tank.cooldown > 0) return;
+    if (!tank || tank.hp <= 0 || tank.cooldown > 0) return;
 
     const rad = tank.angle * (Math.PI / 180);
     const startX = tank.x + TANK_SIZE/2 + (Math.cos(rad) * (TANK_SIZE/2 + 5));
@@ -147,81 +175,72 @@ const handleShoot = (gameState, socketId) => {
     tank.cooldown = 30; 
 };
 
-// --- BOT AI LOGIC ---
+// --- BOT AI ---
 const updateBots = (gameState) => {
     const tanks = gameState.tanks;
     const botIds = Object.keys(tanks).filter(id => tanks[id].isBot);
-    const humanIds = Object.keys(tanks).filter(id => !tanks[id].isBot);
 
     botIds.forEach(botId => {
         const bot = tanks[botId];
-        if (bot.hp <= 0) return; // Toter Bot tut nichts
+        if (bot.hp <= 0) return; 
 
-        // 1. Ziel finden (nächster Spieler oder anderer Bot)
+        // Ziel finden (Nächster lebender Panzer, egal ob Spieler oder Bot)
         let target = null;
         let minDist = Infinity;
-
-        // Suche nach lebenden Feinden (Spieler bevorzugt)
-        const potentialTargets = Object.keys(tanks).filter(id => id !== botId && tanks[id].hp > 0);
         
-        potentialTargets.forEach(tid => {
-            const t = tanks[tid];
-            const dx = t.x - bot.x;
-            const dy = t.y - bot.y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < minDist) {
-                minDist = dist;
-                target = t;
+        Object.keys(tanks).forEach(otherId => {
+            if (otherId !== botId && tanks[otherId].hp > 0) {
+                const t = tanks[otherId];
+                const dx = t.x - bot.x;
+                const dy = t.y - bot.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < minDist) {
+                    minDist = dist;
+                    target = t;
+                }
             }
         });
 
-        // 2. Bewegung
         bot.moveTimer--;
         if (bot.moveTimer <= 0) {
-            // Zufällige neue Bewegung alle paar Frames
-            if (Math.random() < 0.3 && target) {
-                // Versuche zum Gegner zu fahren
+            // Neue Entscheidung treffen
+            if (target && Math.random() < 0.7) { // 70% Chance zum Ziel zu fahren
                 const dx = target.x - bot.x;
                 const dy = target.y - bot.y;
-                // Normalisieren
-                const length = Math.sqrt(dx*dx + dy*dy);
-                if (length > 100) { // Nicht zu nah ranfahren
-                     bot.inputs = { 
-                        x: Math.round(dx / length), 
-                        y: Math.round(dy / length) 
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist > 150) { // Fahr ran
+                    bot.inputs = { 
+                        x: Math.round(dx/dist), 
+                        y: Math.round(dy/dist) 
                     };
-                } else {
-                    // Wenn zu nah, fahr weg oder bleib stehen
+                } else { // Bleib stehen / weich aus
                     bot.inputs = { x: 0, y: 0 };
                 }
             } else {
-                // Zufallsbewegung (Patrouille)
+                // Random Patrol
                 const dirs = [-1, 0, 1];
                 bot.inputs = {
                     x: dirs[Math.floor(Math.random() * 3)],
                     y: dirs[Math.floor(Math.random() * 3)]
                 };
             }
-            bot.moveTimer = 20 + Math.floor(Math.random() * 40);
+            bot.moveTimer = 30 + Math.random() * 30;
         }
 
-        // Winkel zum Ziel berechnen
+        // Zielen
         if (target) {
             const dx = target.x - bot.x;
             const dy = target.y - bot.y;
-            const targetRad = Math.atan2(dy, dx);
-            const targetDeg = targetRad * (180 / Math.PI);
-            bot.angle = targetDeg; // Bot zielt immer perfekt (simple AI)
+            bot.angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
-            // 3. Schießen
-            // Wenn Cooldown bereit und einigermaßen ausgerichtet
-            if (bot.cooldown <= 0 && Math.random() < 0.05) { // 5% Chance pro Frame zu schießen wenn bereit
+            // Schießen wenn ausgerichtet und Cooldown fertig
+            if (bot.cooldown <= 0 && Math.random() < 0.05) {
                 handleShoot(gameState, botId);
             }
         } else if (bot.inputs.x !== 0 || bot.inputs.y !== 0) {
-             // Wenn kein Ziel, schau in Fahrtrichtung
-             const rad = Math.atan2(bot.inputs.y, bot.inputs.x);
-             bot.angle = rad * (180 / Math.PI);
+            // In Fahrtrichtung schauen wenn kein Ziel
+            bot.angle = Math.atan2(bot.inputs.y, bot.inputs.x) * (180 / Math.PI);
         }
     });
 };
@@ -238,12 +257,11 @@ const checkCollision = (rect1, rect2) => {
 const updatePhysics = (gameState) => {
     if (gameState.winner) return;
 
-    // AI Update
     updateBots(gameState);
 
-    // 1. Panzer bewegen (Spieler & Bots)
+    // Panzer bewegen
     Object.values(gameState.tanks).forEach(tank => {
-        if (tank.hp <= 0) return; // Tote Panzer bewegen sich nicht
+        if (tank.hp <= 0) return;
 
         if (tank.cooldown > 0) tank.cooldown--;
 
@@ -256,31 +274,31 @@ const updatePhysics = (gameState) => {
             const newX = tank.x + tank.inputs.x * moveSpeed;
             const newY = tank.y + tank.inputs.y * moveSpeed;
 
-            const tankRectX = { x: newX, y: tank.y, w: TANK_SIZE, h: TANK_SIZE };
-            const tankRectY = { x: tank.x, y: newY, w: TANK_SIZE, h: TANK_SIZE };
+            const rectX = { x: newX, y: tank.y, w: TANK_SIZE, h: TANK_SIZE };
+            const rectY = { x: tank.x, y: newY, w: TANK_SIZE, h: TANK_SIZE };
             
-            let collisionX = false;
-            let collisionY = false;
+            let colX = false;
+            let colY = false;
 
+            // Wand Kollision
             gameState.walls.forEach(wall => {
-                if (checkCollision(tankRectX, wall)) collisionX = true;
-                if (checkCollision(tankRectY, wall)) collisionY = true;
+                if (checkCollision(rectX, wall)) colX = true;
+                if (checkCollision(rectY, wall)) colY = true;
             });
 
-            if (newX < 0 || newX + TANK_SIZE > GAME_WIDTH) collisionX = true;
-            if (newY < 0 || newY + TANK_SIZE > GAME_HEIGHT) collisionY = true;
+            // Map Grenzen
+            if (newX < 0 || newX + TANK_SIZE > GAME_WIDTH) colX = true;
+            if (newY < 0 || newY + TANK_SIZE > GAME_HEIGHT) colY = true;
 
-            if (!collisionX) tank.x = newX;
-            if (!collisionY) tank.y = newY;
+            if (!colX) tank.x = newX;
+            if (!colY) tank.y = newY;
             
-            // Bei Bots: Wenn Kollision, ändere Richtung beim nächsten Frame
-            if ((collisionX || collisionY) && tank.isBot) {
-                tank.moveTimer = 0; // Trigger new move decision
-            }
+            // Bot bleibt stecken? Neue Richtung suchen
+            if (tank.isBot && (colX || colY)) tank.moveTimer = 0;
         }
     });
 
-    // 2. Kugeln bewegen
+    // Kugeln bewegen
     for (let i = gameState.bullets.length - 1; i >= 0; i--) {
         const b = gameState.bullets[i];
         b.x += b.dx;
@@ -288,45 +306,38 @@ const updatePhysics = (gameState) => {
 
         let destroyed = false;
 
-        // Wand
-        if (b.x < 0 || b.x > GAME_WIDTH || b.y < 0 || b.y > GAME_HEIGHT) {
-            destroyed = true;
-        } else {
+        // Grenzen
+        if (b.x < 0 || b.x > GAME_WIDTH || b.y < 0 || b.y > GAME_HEIGHT) destroyed = true;
+        
+        // Wände
+        if (!destroyed) {
             gameState.walls.forEach(wall => {
-                if (checkCollision({ x: b.x, y: b.y, w: BULLET_SIZE, h: BULLET_SIZE }, wall)) {
-                    destroyed = true;
-                }
+                if (checkCollision({ x: b.x, y: b.y, w: BULLET_SIZE, h: BULLET_SIZE }, wall)) destroyed = true;
             });
         }
 
         // Treffer
         if (!destroyed) {
-            Object.keys(gameState.tanks).forEach(socketId => {
-                // Panzer muss leben um getroffen zu werden
-                const tank = gameState.tanks[socketId];
-                if (socketId !== b.owner && tank.hp > 0) { 
+            Object.keys(gameState.tanks).forEach(id => {
+                const tank = gameState.tanks[id];
+                if (id !== b.owner && tank.hp > 0) {
                     if (checkCollision({ x: b.x, y: b.y, w: BULLET_SIZE, h: BULLET_SIZE }, { x: tank.x, y: tank.y, w: TANK_SIZE, h: TANK_SIZE })) {
                         destroyed = true;
                         tank.hp--;
-                        // Win Condition: Last Man Standing (oder erster Kill in diesem einfachen Modus)
-                        // Um das Spiel spannend zu machen, lassen wir es laufen bis einer stirbt, 
-                        // oder wenn es ein Bot ist, einfach weiterlaufen bis ein Spieler gewinnt?
-                        // Simple Logik: Wenn ein MENSCH stirbt, verliert er. Wenn ein Bot stirbt, ist er weg.
                         
-                        if (tank.hp <= 0) {
-                            // Wenn ein Spieler stirbt, hat der Schütze gewonnen (vereinfacht)
-                            // Oder: Game Over wenn nur noch 1 Team übrig ist.
-                            // Wir behalten die alte "First Blood wins" Logik für schnelle Runden,
-                            // aber ignorieren Bot-Tode für das Spielende, außer es war der letzte Gegner.
-                            
-                            if (!tank.isBot) {
-                                // Ein Spieler ist gestorben -> Der Killer gewinnt
-                                gameState.winner = b.owner; 
-                            } else {
-                                // Ein Bot ist gestorben. Prüfen ob noch Bots da sind?
-                                // Für jetzt: Spiel geht weiter, Bot ist weg.
-                                // Optional: Wenn der Spieler alle Bots besiegt, gewinnt er.
-                            }
+                        // Sieg-Bedingung: Nur noch 1 Team/Spieler übrig?
+                        // Einfachheitshalber: Wer einen killt, bekommt Punkte? 
+                        // Hier: Wenn ein SPIELER stirbt, ist Game Over.
+                        if (tank.hp <= 0 && !tank.isBot) {
+                            // Wenn P1 stirbt, gewinnt der Schütze (auch wenns ein Bot war)
+                            gameState.winner = b.owner.startsWith('bot') ? "BOTS" : b.owner;
+                        }
+                        // Wenn Bot stirbt, einfach weiter spielen (er ist dann inaktiv)
+                        
+                        // Check ob alle Gegner tot sind (für den Spieler)
+                        const aliveEnemies = Object.values(gameState.tanks).filter(t => t.id !== b.owner && t.hp > 0).length;
+                        if (aliveEnemies === 0 && !gameState.tanks[b.owner].isBot) {
+                            gameState.winner = b.owner;
                         }
                     }
                 }
