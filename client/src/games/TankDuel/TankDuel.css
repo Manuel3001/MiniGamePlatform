@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: sans-serif;
 }
 
 .tank-hp-bar {
@@ -11,79 +11,108 @@
     gap: 20px;
     font-size: 1.2rem;
     margin-bottom: 10px;
-    font-weight: bold;
-    text-shadow: 0 0 5px black;
     background: rgba(0, 0, 0, 0.5);
     padding: 5px 20px;
     border-radius: 20px;
 }
 
-.tank-field {
+/* --- VIEWPORT & WELT --- */
+.tank-viewport {
     position: relative;
-    border: 4px solid #333;
+    border: 4px solid #555;
     box-shadow: 0 0 30px black;
     overflow: hidden;
-    transition: background 0.5s;
+    /* WICHTIG: Versteckt alles außerhalb */
+    background: #000;
 }
 
-/* --- THEMES (Designs für Maps) --- */
+.tank-field {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Übergang glätten für Kamera */
+    will-change: transform;
+}
 
-/* THEME: DESERT */
+/* --- THEMES --- */
+/* Desert */
 .tank-field.theme-desert {
     background-color: #e3cfa5;
-    background-image: radial-gradient(#d1bfa0 15%, transparent 16%), radial-gradient(#d1bfa0 15%, transparent 16%);
+    background-image: radial-gradient(#d1bfa0 15%, transparent 16%);
     background-size: 60px 60px;
-    border-color: #8d6e63;
 }
 
 .theme-desert .wall {
     background-color: #8d6e63;
-    border-color: #5d4037;
-    background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.1) 20px);
-    border-radius: 4px;
+    border: 2px solid #5d4037;
 }
 
-/* THEME: FOREST */
+/* Forest */
 .tank-field.theme-forest {
     background-color: #2e7d32;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
-    border-color: #1b5e20;
 }
 
 .theme-forest .wall {
     background-color: #1b5e20;
-    border-color: #003300;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
-    /* Blatt-Muster Simulation */
-    background-image: radial-gradient(#2e7d32 15%, transparent 16%);
-    background-size: 10px 10px;
+    border: 2px solid #003300;
 }
 
-/* THEME: CYBER */
+/* Cyber */
 .tank-field.theme-cyber {
     background-color: #0d0d0d;
-    background-image: linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px);
+    background-image: linear-gradient(#222 1px, transparent 1px);
     background-size: 50px 50px;
-    border-color: #00e5ff;
-    box-shadow: 0 0 20px #00e5ff;
 }
 
 .theme-cyber .wall {
     background-color: #111;
     border: 2px solid #00e5ff;
-    box-shadow: 0 0 10px #00e5ff, inset 0 0 10px #00e5ff;
+    box-shadow: 0 0 10px #00e5ff;
 }
 
-/* Standard Wall Fallback */
+/* FIX FÜR UNSICHTBARE WÄNDE: Fallback Farbe */
 .wall {
     position: absolute;
+    background-color: #777;
+    /* Falls Theme nicht lädt */
+    border: 2px solid #555;
     box-sizing: border-box;
     z-index: 5;
 }
 
+/* --- MINIMAP --- */
+.minimap {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid white;
+    z-index: 100;
+}
 
-/* --- PANZER DESIGNS --- */
+.mm-wall {
+    position: absolute;
+    background: #999;
+}
+
+.mm-tank {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.mm-viewport-frame {
+    position: absolute;
+    border: 1px solid yellow;
+    box-shadow: 0 0 5px yellow;
+    pointer-events: none;
+}
+
+/* --- PANZER & KUGELN (wie gehabt) --- */
 .tank {
     position: absolute;
     width: 40px;
@@ -129,7 +158,6 @@
     height: 24px;
     z-index: 2;
     border: 2px solid rgba(0, 0, 0, 0.5);
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .tank-barrel {
@@ -142,33 +170,19 @@
     z-index: 3;
 }
 
-/* VARIANTE 0: Standard (Eckig) */
+/* Varianten */
 .tank.variant-0 .tank-body {
     border-radius: 2px;
 }
 
-/* VARIANTE 1: Rund (Speedster Look) */
 .tank.variant-1 .tank-body {
     border-radius: 12px;
     width: 28px;
 }
 
-.tank.variant-1 .tank-tracks::before,
-.tank.variant-1 .tank-tracks::after {
-    border-radius: 4px;
-}
-
-/* VARIANTE 2: Heavy (Futuristisch) */
 .tank.variant-2 .tank-body {
     width: 34px;
     clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0 100%);
-    border-radius: 0;
-}
-
-.tank.variant-2 .tank-barrel {
-    width: 30px;
-    height: 8px;
-    right: -10px;
 }
 
 .bullet {
@@ -183,12 +197,6 @@
     box-shadow: 0 0 5px orange;
 }
 
-.controls-hint {
-    margin-top: 10px;
-    color: #888;
-    font-size: 0.9rem;
-}
-
 .game-status {
     font-size: 4rem;
     position: absolute;
@@ -199,5 +207,4 @@
     text-shadow: 0 0 20px black;
     z-index: 100;
     pointer-events: none;
-    font-weight: bold;
 }
